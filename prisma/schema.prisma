@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id String @id @default(uuid())
+  name String
+  password String
+  perfil String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+@@map("users")
+}
+
+model Evento{
+  id String @id @default(uuid())
+  name String
+  data_evento DateTime
+  descricao String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  categoria_id String
+  local_id String
+
+  categorias Categoria @relation(fields: [categoria_id], references: [id])
+  locais Local @relation(fields: [local_id], references: [id])
+  
+  @@map("eventos")
+}
+
+
+model Categoria{
+  id String @id @default(uuid())
+  name String 
+  tipo_evento String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  
+  eventos Evento[]
+
+
+@@map("categorias")
+}
+
+
+model Local{
+  id String @id  @default(uuid())
+  espaco_name String
+  endereco String
+  setor String
+  cidade String
+  estado String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  eventos Evento[]
+
+
+
+  @@map("locais")
+}
